@@ -1,58 +1,64 @@
-const logsOld = [
-  "dig1 8 1 5 1",
-  "let1 art can",
-  "dig2 3 6",
-  "let2 own kit dig",
-  "let3 art zero",
-];
-
-const logs = ["art can", "own kit dig", "art zero"];
-
-const compareElementToArray = (element, logs) => {};
-
-const reorderLogFilesOld = (logs) => {
-  const digits = [];
-  const strings = [];
-  logs.forEach((element) => {
-    const arrayOfWords = element.split(" ");
-    if (!isNaN(arrayOfWords[1])) {
-      digits.push(element);
-    } else {
-      strings.push(element);
-    }
-  });
-
-  console.log(`Strings: ${strings}`);
-  console.log(`Digits: ${digits}`);
+/**
+ * @param {string[]} logs
+ * @return {string[]}
+ */
+var reorderLogFiles = function (logs) {
+  return mergeSortStr(
+    logs.filter((item) => isNaN(item[item.length - 1]))
+  ).concat(logs.filter((item) => !isNaN(item[item.length - 1])));
 };
 
-const reorderLogFiles = (logs) => {
-  let i = 0;
-  const stringOutput = [];
+const mergeSortStr = (arr) => {
+  if (arr.length == 1) {
+    return arr;
+  }
+  if (arr.length > 1) {
+    //Split
+    const leftArr = mergeSortStr(arr.slice(0, arr.length / 2));
+    const rightArr = mergeSortStr(arr.slice(arr.length / 2, arr.length));
 
-  while (i < logs.length - 1) {
-    for (let j = i + 1; j < i < logs.length; j++) {
-      if (logs[i].localeCompare(logs[j])) {
+    //Merge
+    const mergedArray = [];
+    while (leftArr && leftArr.length > 0 && rightArr && rightArr.length > 0) {
+      const lStr = leftArr[0];
+      const rStr = rightArr[0];
+
+      if (
+        lStr
+          .substring(lStr.indexOf(" "), lStr.length)
+          .localeCompare(rStr.substring(rStr.indexOf(" "), rStr.length)) == 0
+      ) {
+        if (lStr.localeCompare(rStr) < 1) {
+          mergedArray.push(leftArr.shift());
+        } else {
+          mergedArray.push(rightArr.shift());
+        }
+      } else if (
+        lStr
+          .substring(lStr.indexOf(" "), lStr.length)
+          .localeCompare(rStr.substring(rStr.indexOf(" "), rStr.length)) < 1
+      ) {
+        mergedArray.push(leftArr.shift());
+      } else {
+        mergedArray.push(rightArr.shift());
       }
     }
-    i++;
+    return mergedArray.concat(leftArr, rightArr);
   }
-  for (let i = 0; i < logs.length; i++) {}
-
-  const digits = [];
-  const strings = [];
-
-  logs.forEach((element) => {
-    const arrayOfWords = element.split(" ");
-    if (!isNaN(arrayOfWords[1])) {
-      digits.push(element);
-    } else {
-      strings.push(element);
-    }
-  });
-
-  console.log(`Strings: ${strings}`);
-  console.log(`Digits: ${digits}`);
 };
 
-reorderLogFiles(logs);
+
+const logs = [
+  "dig1 8 1 5 1",
+  "let1 minisota allo",
+  "let2 minisota mellow",
+  "dig2 4 6",
+  "let3 yellow zebra",
+  "let4 art can",
+  "dig3 3 6",
+  "let5 own kit",
+  "dig4 3 6",
+  "let6 art zero",
+];
+
+console.log(reorderLogFiles(logs));
