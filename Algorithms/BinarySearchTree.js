@@ -51,7 +51,7 @@ class BinarySearchTree {
     }
   }
 
-  printTree(nodeQueue) {
+  printTreeTopDown(nodeQueue) {
     const currentItem = nodeQueue.shift();
 
     if (currentItem === undefined) {
@@ -67,27 +67,26 @@ class BinarySearchTree {
       nodeQueue.push(currentItem.right);
     }
 
-    this.printTree(nodeQueue);
+    this.printTreeTopDown(nodeQueue);
+  }
+
+  _deallocateTreeNodes(head) {
+    if (head.left) {
+      this._deallocateTreeNodes(head.left);
+      delete head.left;
+    }
+    if (head.right) {
+      this._deallocateTreeNodes(head.right);
+      delete head.right;
+    }
+
+    delete head.value;
+    head = null;
+  }
+
+  deallocateTreeNodes() {
+    this._deallocateTreeNodes(this.head);
   }
 }
 
-const headNode = new Node(8);
-const binarySearchTree = new BinarySearchTree(headNode);
-binarySearchTree.insertNode(headNode, new Node(3));
-binarySearchTree.insertNode(headNode, new Node(10));
-binarySearchTree.insertNode(headNode, new Node(1));
-binarySearchTree.insertNode(headNode, new Node(6));
-binarySearchTree.insertNode(headNode, new Node(14));
-binarySearchTree.insertNode(headNode, new Node(4));
-binarySearchTree.insertNode(headNode, new Node(7));
-binarySearchTree.insertNode(headNode, new Node(13));
-
-console.log(`TreeDessendingOrder`);
-binarySearchTree.printTreeDessendingOrder(headNode);
-console.log(`printTreeAssendingOrder`);
-binarySearchTree.printTreeAssendingOrder(headNode);
-
-const nodeQueue = [];
-nodeQueue.push(headNode);
-console.log(`Printing the Binary tree in an order....`);
-binarySearchTree.printTree(nodeQueue);
+module.exports = { Node, BinarySearchTree };
