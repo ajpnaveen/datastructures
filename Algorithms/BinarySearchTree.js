@@ -70,6 +70,52 @@ class BinarySearchTree {
     this.printTreeTopDown(nodeQueue);
   }
 
+  isTreePalindrome(headNode) {
+    const nodeQueue = [];
+    const leftBranch = [];
+    nodeQueue.push(headNode.left);
+    this.breathFirstSearch(nodeQueue, leftBranch, true);
+
+    const rightBranch = [];
+    nodeQueue.push(headNode.right);
+    this.breathFirstSearch(nodeQueue, rightBranch, false);
+
+    if (JSON.stringify(leftBranch) === JSON.stringify(rightBranch)) {
+      console.log("Palindrome...");
+    } else {
+      console.log("Not a Palindrome...");
+    }
+  }
+
+  breathFirstSearch(nodeQueue, outputValues, readFromLeft = true) {
+    const currentItem = nodeQueue.shift();
+
+    if (currentItem === undefined) {
+      return;
+    } else {
+      outputValues.push(currentItem.value);
+    }
+
+    if (readFromLeft) {
+      if (currentItem.left) {
+        nodeQueue.push(currentItem.left);
+      }
+
+      if (currentItem.right) {
+        nodeQueue.push(currentItem.right);
+      }
+      this.breathFirstSearch(nodeQueue, outputValues, true);
+    } else {
+      if (currentItem.right) {
+        nodeQueue.push(currentItem.right);
+      }
+      if (currentItem.left) {
+        nodeQueue.push(currentItem.left);
+      }
+      this.breathFirstSearch(nodeQueue, outputValues, false);
+    }
+  }
+
   _deallocateTreeNodes(head) {
     if (head.left) {
       this._deallocateTreeNodes(head.left);
